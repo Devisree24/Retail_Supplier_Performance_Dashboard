@@ -121,23 +121,4 @@ Output: `data/Sales.csv`, `data/Inventory.csv`, `data/Pricing_Promo.csv`.
 
 ---
 
-## Optional: Tableau
 
-- Use the same CSVs or Excel tables as data sources.
-- **Dashboard ideas:** Sales vs Inventory by retailer/region; Margin by category; Promo effectiveness (units/revenue during promo vs non-promo).
-
----
-
-## Why Interviewers Like This Project
-
-- **Supplier performance** – P&G → multi-retailer view.
-- **Retail analytics** – Walmart, Sam's Club, Costco; EDLP vs promo.
-- **Inventory + sales + pricing** – Single pipeline (Power Query merge).
-- **Excel automation** – One-click refresh, pivots, risk highlighting, alerts, export.
-
----
-
-## Requirements
-
-- **Python 3.7+** (stdlib only) for data generation.
-- **Excel** with Power Query and VBA (Microsoft 365 or Excel 2016+).
