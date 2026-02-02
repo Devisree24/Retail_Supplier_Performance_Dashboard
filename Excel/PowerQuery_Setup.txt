@@ -1,0 +1,43 @@
+================================================================================
+Retail Supplier Performance - Power Query Setup
+================================================================================
+
+STEP 1: Load Data Sources
+-------------------------
+1. Open Excel > Data tab > Get Data > From File > From Text/CSV
+2. Select: data\Sales.csv
+   - Click "Transform Data" (not Load)
+   - In Power Query Editor: Set column types (Date, text, number). Trim SKU, Retailer, Store.
+   - Name the query: Sales
+   - Close & Load To... → Only Create Connection
+
+3. Repeat for: data\Inventory.csv
+   - Name query: Inventory
+   - Load To: Only Create Connection
+
+4. Repeat for: data\Pricing_Promo.csv
+   - Name query: Pricing_Promo
+   - Load To: Only Create Connection
+
+--------------------------------------------------------------------------------
+STEP 2: Create Merged Query
+---------------------------
+1. Data > Get Data > From Other Sources > Blank Query
+2. Name it: Merged
+3. Home > Advanced Editor — paste the full M code from PowerQuery\Merge_Sales_Inventory_Pricing.pq
+4. Ensure query names in the M code match: Sales, Inventory, Pricing_Promo
+5. Load Merged to a Table (new worksheet)
+
+--------------------------------------------------------------------------------
+STEP 3: Data Cleanup in Power Query
+-----------------------------------
+- Remove duplicates: Table > Remove Rows > Remove Duplicates (e.g. Date, SKU, Retailer, Store)
+- Replace nulls: Transform > Replace Values (null → "" or 0)
+- Trim: Transform > Format > Trim (SKU, Retailer, Store)
+- Set Date columns to type Date
+
+--------------------------------------------------------------------------------
+STEP 4: Refresh
+--------------
+- Data > Queries & Connections > Right-click query > Refresh
+- Or use the VBA one-click button (RefreshAndReport) to refresh all queries, pivots, and run alerts.

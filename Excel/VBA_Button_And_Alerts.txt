@@ -1,0 +1,44 @@
+================================================================================
+Retail Supplier Performance - VBA Button & Alerts
+================================================================================
+
+ONE-CLICK BUTTON (RefreshAndReport)
+-----------------------------------
+1. Import the VBA module: Developer tab > Visual Basic > File > Import File
+   Select: VBA\DashboardAutomation.bas
+
+2. Add a button: Developer tab > Insert > Button (Form Control)
+   Draw on the sheet (e.g. "Executive Summary" or "KPIs")
+
+3. Assign macro: When prompted, select "RefreshAndReport" (or RetailSupplier_DashboardAutomation.RefreshAndReport)
+
+4. What the button does:
+   - Refreshes all Power Query connections
+   - Refreshes all PivotTables
+   - Recalculates the workbook
+   - Highlights stockout risks (Ending Inventory <= Reorder Point) in amber
+   - Applies conditional formatting to KPI cells (low margin red, low availability amber)
+   - Runs business alerts (message box with findings)
+
+EXPORT SUMMARY REPORT
+---------------------
+1. Create a sheet named "Executive Summary" or "KPIs" with your summary tables/charts.
+2. Run macro: ExportSummaryReport (Alt+F8 > ExportSummaryReport > Run)
+   Or assign to a second button.
+3. A PDF is saved in the workbook folder: Retail_Supplier_Summary_yyyymmdd_hhnn.pdf
+
+ALERTS (Message Box After RefreshAndReport)
+-------------------------------------------
+1. "Low inventory risk for top SKUs"
+   - Triggers when 5+ SKU/Store rows have Ending Inventory <= Reorder Point.
+   - Message lists up to 5 examples. Risk: lost sales, retailer penalties.
+
+2. "Margin erosion due to discounting"
+   - Triggers when 50+ sales/merged rows have Gross Margin % < 15%.
+   - Suggests reviewing promo depth and list vs promo price.
+
+3. "Stockout risk"
+   - Triggers when 3+ Inventory rows have Ending Inventory = 0.
+   - Suggests expediting replenishment.
+
+You can run only the alerts: Alt+F8 > RunBusinessAlerts > Run.

@@ -1,0 +1,79 @@
+================================================================================
+Retail Supplier Performance & Inventory Optimization - KPI Formulas Reference
+================================================================================
+Use these in your Excel workbook. Adjust table/range names (e.g., Sales, Inventory)
+to match your Power Query output or table names.
+
+--------------------------------------------------------------------------------
+CORE KPIs
+--------------------------------------------------------------------------------
+
+1. INVENTORY TURNOVER
+   = COGS / Average Inventory
+   =SUMIFS(Sales[Cost], Sales[Retailer], A2) / ((SUMIFS(Inventory[Beginning Inventory], Inventory[Retailer], A2) + SUMIFS(Inventory[Ending Inventory], Inventory[Retailer], A2)) / 2)
+   Or by SKU: =SUMIFS(Sales[Cost], Sales[SKU], A2) / ((SUMIFS(Inventory[Beginning Inventory], Inventory[SKU], A2) + SUMIFS(Inventory[Ending Inventory], Inventory[SKU], A2)) / 2)
+
+2. STOCKOUT RATE
+   = (1 - Sell-through or availability proxy). If you have no OSA column:
+   = 1 - (SUM(Inventory[Ending Inventory]) / SUM(Inventory[Beginning Inventory]))  ' low ending vs beginning = stockouts
+   Or: Count rows where Ending Inventory = 0 / Total rows.
+
+3. GROSS MARGIN %
+   =(SUMIFS(Sales[Revenue], Sales[Retailer], A2) - SUMIFS(Sales[Cost], Sales[Retailer], A2)) / SUMIFS(Sales[Revenue], Sales[Retailer], A2)
+   Or per row: (Revenue - Cost) / Revenue
+
+4. PROMO LIFT %
+   = (Promo Period Units - Base Period Units) / Base Period Units
+   Use SUMIFS + date filters: compare units in Promo Start–Promo End vs same length period before.
+   Example: = (SUMIFS(Sales[Units Sold], Sales[SKU], A2, Sales[Date], ">="&PromoStart, Sales[Date], "<="&PromoEnd) - BaseUnits) / BaseUnits
+
+5. REVENUE PER SKU
+   =SUMIFS(Sales[Revenue], Sales[SKU], A2)
+   By retailer: =SUMIFS(Sales[Revenue], Sales[SKU], A2, Sales[Retailer], B2)
+
+6. SELL-THROUGH %
+   = (Beginning Inventory - Ending Inventory) / Beginning Inventory
+   In merged table: =(Merged[Beginning Inventory] - Merged[Ending Inventory]) / Merged[Beginning Inventory]
+   Or: =SUMIFS(Inventory[Beginning Inventory]-Inventory[Ending Inventory], ...) / SUMIFS(Inventory[Beginning Inventory], ...)
+
+--------------------------------------------------------------------------------
+ADVANCED FORMULAS (SUMIFS, XLOOKUP, FILTER)
+--------------------------------------------------------------------------------
+
+Revenue by Retailer:
+  =SUMIFS(Sales[Revenue], Sales[Retailer], "Walmart")
+  =SUMIFS(Sales[Revenue], Sales[Retailer], A2, Sales[Product Category], B2)
+
+Units by SKU & Retailer:
+  =SUMIFS(Sales[Units Sold], Sales[SKU], A2, Sales[Retailer], B2)
+
+XLOOKUP - Reorder Point, Lead Time:
+  =XLOOKUP(A2&B2, Inventory[SKU]&Inventory[Store], Inventory[Reorder Point], "N/A")
+  =XLOOKUP(A2, Pricing_Promo[SKU], Pricing_Promo[List Price], "N/A")
+
+FILTER - Stockout risk (Ending Inventory below Reorder Point):
+  =FILTER(Inventory, Inventory[Ending Inventory] <= Inventory[Reorder Point])
+
+FILTER - Low margin SKUs (< 15%):
+  =FILTER(Merged, Merged[Gross Margin %] < 15)
+
+FILTER - Top revenue SKUs:
+  =SORT(FILTER(UNIQUE(Sales[SKU]), ...), SUMIFS(Sales[Revenue], Sales[SKU], UNIQUE(Sales[SKU])), -1)
+
+--------------------------------------------------------------------------------
+CONDITIONAL FORMATTING (KPI dashboard)
+--------------------------------------------------------------------------------
+
+- Gross Margin % < 15%: Red fill (margin erosion)
+- Ending Inventory <= Reorder Point: Amber (stockout risk)
+- Inventory Turnover < 4: Yellow (slow-moving)
+- Sell-Through < 20% with Ending Inventory > 100: Red (overstock / markdown candidate)
+
+--------------------------------------------------------------------------------
+PIVOT TABLE SUGGESTIONS
+--------------------------------------------------------------------------------
+
+1. Sales vs Inventory: Rows = Retailer, Region; Values = Sum of Revenue, Sum of Ending Inventory; Slicer = Product Category.
+2. Margin by Category: Rows = Product Category, Retailer; Values = Sum of Revenue, Sum of Cost; Calculated Field = (Revenue-Cost)/Revenue.
+3. Promo effectiveness: Rows = SKU or Category; Columns = Promo Yes/No (based on date in Promo Start–End); Values = Sum of Units Sold, Revenue.
+4. Top SKUs by Revenue: Rows = SKU; Values = Sum of Revenue, Sum of Units Sold; Filter Top 20 by Revenue.

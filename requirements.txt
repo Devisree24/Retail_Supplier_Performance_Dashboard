@@ -1,0 +1,2 @@
+# Retail Supplier Performance & Inventory Optimization - Data Generator
+# Python 3.7+ (stdlib only; no external packages required)
